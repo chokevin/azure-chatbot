@@ -1,31 +1,31 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
   "manifestVersion": "1.16",
-  "version": "1.0.0",
-  "id": "YOUR_BOT_APP_ID_HERE",
-  "packageName": "com.company.azurebotforreams",
+  "version": "1.0.1",
+  "id": "4bc2fae2-04dc-4b23-a9b7-e6b6422995ee",
+  "packageName": "com.microsoft.azure.echobotoauth",
   "developer": {
-    "name": "Your Company",
-    "websiteUrl": "https://your-company.com",
-    "privacyUrl": "https://your-company.com/privacy",
-    "termsOfUseUrl": "https://your-company.com/terms"
+    "name": "Microsoft",
+    "websiteUrl": "https://docs.microsoft.com/azure/bot-service/",
+    "privacyUrl": "https://privacy.microsoft.com/",
+    "termsOfUseUrl": "https://www.microsoft.com/legal/terms-of-use"
   },
   "icons": {
     "color": "icon-color.png",
     "outline": "icon-outline.png"
   },
   "name": {
-    "short": "Azure Bot Sample",
-    "full": "Azure Bot Sample for Microsoft Teams"
+    "short": "OAuth Echo Bot",
+    "full": "OAuth-Enabled Azure Echo Bot for Microsoft Teams"
   },
   "description": {
-    "short": "An echo bot for Teams",
-    "full": "A sample Azure Bot Service application that echoes messages back to users in Microsoft Teams"
+    "short": "An OAuth-enabled echo bot with Microsoft authentication",
+    "full": "A sample Azure Bot Service application with OAuth authentication that echoes messages back to users and provides personalized responses when authenticated with Microsoft credentials"
   },
-  "accentColor": "#FFFFFF",
+  "accentColor": "#0078D4",
   "bots": [
     {
-      "botId": "YOUR_BOT_APP_ID_HERE",
+      "botId": "4bc2fae2-04dc-4b23-a9b7-e6b6422995ee",
       "scopes": [
         "personal",
         "team",
@@ -42,10 +42,11 @@
     "messageTeamMembers"
   ],
   "validDomains": [
-    "YOUR_BOT_DOMAIN_HERE"
+    "*.azurewebsites.net",
+    "token.botframework.com"
   ],
   "webApplicationInfo": {
-    "id": "YOUR_BOT_APP_ID_HERE",
-    "resource": "https://YOUR_BOT_DOMAIN_HERE"
+    "id": "4bc2fae2-04dc-4b23-a9b7-e6b6422995ee",
+    "resource": "https://graph.microsoft.com/"
   }
 }

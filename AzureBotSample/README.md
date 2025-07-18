@@ -1,17 +1,24 @@
-# Azure Bot Service Sample - Echo Bot with Teams Integration
+# OAuth-Enabled Azure Bot for Microsoft Teams
 
-This is a sample Azure Bot Service application built with .NET 9.0, following the [Azure Bot Service Quickstart guide](https://learn.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-create-bot?view=azure-bot-service-4.0&tabs=csharp%2Cvs), **now enhanced with Microsoft Teams integration**.
+This Azure Bot Service application is built with .NET 9.0 and enhanced with **OAuth authentication** and **Microsoft Teams integration**. Users can authenticate with their Microsoft credentials and access profile information via Microsoft Graph API.
 
 ## Features
 
-- **Echo Bot Implementation**: Echoes back any message sent to it
-- **Welcome Message**: Greets new users when they join the conversation
-- **Microsoft Teams Integration**: Ready-to-deploy Teams bot with channel configuration
-- **Azure Infrastructure**: Complete Bicep templates for Azure deployment
-- **Error Handling**: Comprehensive error handling with logging and user feedback
-- **Health Checks**: Built-in health monitoring endpoint
-- **Security**: Following Azure security best practices with Key Vault and Managed Identity
-- **Logging**: Structured logging for debugging and monitoring
+- **🔐 OAuth Authentication**: Microsoft credential login with Azure AD
+- **📢 Enhanced Echo Bot**: Context-aware responses based on authentication status  
+- **👤 Profile Integration**: Access user profile information via Microsoft Graph API
+- **🎯 Microsoft Teams Integration**: Ready-to-deploy Teams bot with channel configuration
+- **☁️ Azure Infrastructure**: Complete Bicep templates for Azure deployment
+- **🛡️ Error Handling**: Comprehensive error handling with logging and user feedback
+- **❤️ Health Checks**: Built-in health monitoring endpoint
+- **🔒 Security**: Following Azure security best practices with Managed Identity
+
+## OAuth Commands
+
+- **`login`** - Authenticate with Microsoft credentials
+- **`logout`** - Sign out from the bot  
+- **`profile`** - View your Microsoft profile information
+- **Any other message** - Enhanced echo with personalized greeting (when authenticated)
 
 ## Project Structure
 
@@ -19,153 +26,83 @@ This is a sample Azure Bot Service application built with .NET 9.0, following th
 AzureBotSample/
 ├── Controllers/
 │   └── BotController.cs          # HTTP endpoint for bot messages
+├── Dialogs/
+│   └── MainDialog.cs            # OAuth dialog and conversation flow
 ├── infra/                        # Azure Infrastructure (Bicep templates)
 │   ├── main.bicep               # Main infrastructure template
 │   └── main.parameters.json     # Template parameters
 ├── teams-manifest/               # Microsoft Teams app manifest
 │   └── manifest.json            # Teams app configuration
-├── EchoBot.cs                    # Main bot logic
+├── OAuthEchoBot.cs              # OAuth-enabled bot implementation
 ├── AdapterWithErrorHandler.cs   # Error handling for bot adapter
 ├── Program.cs                    # Application startup and configuration
 ├── azure.yaml                   # Azure Developer CLI configuration
 ├── appsettings.json             # Production configuration
-├── appsettings.Development.json # Development configuration
-├── AzureBotSample.csproj        # Project file with dependencies
-├── TEAMS-DEPLOYMENT.md          # Teams integration deployment guide
-└── TESTING.md                   # Local testing guide
+└── AzureBotSample.csproj        # Project file with dependencies
 ```
 
-## Quick Start - Teams Integration
+## 🚀 **Primary Deployment & Testing Workflow**
 
-### Deploy to Azure and Connect to Teams
+**⚡ Use this single workflow for all deployments and testing:**
 
-1. **Register your bot** (get App ID and Password):
-   ```bash
-   # See TEAMS-DEPLOYMENT.md for detailed instructions
-   ```
-
-2. **Deploy to Azure**:
-   ```bash
-   azd auth login
-   azd init
-   azd up
-   ```
-
-3. **Configure Teams app** using the manifest in `teams-manifest/`
-
-4. **Install in Teams** and start chatting!
-
-For detailed instructions, see [TEAMS-DEPLOYMENT.md](./TEAMS-DEPLOYMENT.md).
-
-## Local Development
-
-### Prerequisites
-
-- .NET 9.0 SDK
-- Azure subscription
-- Bot Framework Emulator (for local testing)
-- Azure Developer CLI (azd) for deployment
-
-### Local Development Setup
-
-1. **Clone and restore packages**:
-   ```bash
-   cd AzureBotSample
-   dotnet restore
-   ```
-
-2. **Run the application**:
-   ```bash
-   dotnet run
-   ```
-
-3. **Test with Bot Framework Emulator**:
-   - Download [Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator/releases)
-   - Connect to: `http://localhost:5000/api/messages`
-   - Leave App ID and App Password empty for local testing
-
-## Configuration
-
-### Local Development
-For local testing, no configuration is required. The bot will run without authentication.
-
-### Azure Deployment
-When deploying to Azure, configure these settings in your App Service:
-
-```json
-{
-  "MicrosoftAppType": "MultiTenant",
-  "MicrosoftAppId": "<your-app-id>",
-  "MicrosoftAppPassword": "<your-app-password>",
-  "MicrosoftAppTenantId": "<your-tenant-id>"
-}
+### **Step 1: Deploy with Azure Developer CLI**
+```bash
+cd AzureBotSample
+azd auth login
+azd init    # First time only
+azd up      # Deploy everything
 ```
 
-## Security Best Practices Implemented
+### **Step 2: Configure OAuth in Azure Portal**
+1. Go to Azure Portal → Your Bot Resource → Configuration → OAuth Connection Settings
+2. Add setting named `BotTeamsAuthADv2` with Azure AD v2 provider
+3. Configure scopes: `https://graph.microsoft.com/User.Read`
 
-- **Managed Identity Support**: Ready for Azure Managed Identity when deployed
-- **Secure Configuration**: Sensitive settings externalized to configuration
-- **Error Handling**: Comprehensive error handling without exposing sensitive information
-- **HTTPS Enforcement**: HTTPS redirection enabled
-- **Input Validation**: Bot Framework handles input validation
-- **Health Monitoring**: Health check endpoint for monitoring
+### **Step 3: Create and Upload Teams App**
+```bash
+cd teams-manifest
+zip -r ../OAuth-Echo-Bot-Teams-App.zip manifest.json icon-color.png icon-outline.png
+```
+Upload `OAuth-Echo-Bot-Teams-App.zip` to Microsoft Teams.
 
-## Bot Framework Components
+### **Step 4: Test OAuth Features**
+- `login` → Microsoft authentication
+- `profile` → View user profile  
+- `logout` → Sign out
+- Any message → Enhanced echo responses
+
+**📋 For detailed step-by-step instructions, see [PRIMARY-TESTING-FLOW.md](../PRIMARY-TESTING-FLOW.md)**
+
+## 📚 **Documentation**
+
+- **[PRIMARY-TESTING-FLOW.md](../PRIMARY-TESTING-FLOW.md)** - **Main deployment & testing workflow** ⭐
+- **[OAUTH-INTEGRATION.md](../docs/OAUTH-INTEGRATION.md)** - Detailed OAuth setup and troubleshooting
+- **[TEAMS-APP-INSTRUCTIONS.md](../docs/TEAMS-APP-INSTRUCTIONS.md)** - Teams app package upload guide
+
+## 🔧 **Local Development** (Optional)
+
+For development and testing without deployment:
+
+```bash
+dotnet restore
+dotnet run
+# Test with Bot Framework Emulator at http://localhost:5209/api/messages
+```
+
+## 🛡️ **Security Features**
+
+- **Azure Managed Identity**: No hardcoded credentials
+- **OAuth Token Management**: Secure Azure Bot Service token handling
+- **Minimal Permissions**: Only User.Read Graph API scope
+- **HTTPS Enforcement**: Production-ready security
+
+## 📊 **Bot Framework Components**
 
 - **Microsoft.Bot.Builder**: Core Bot Framework functionality
+- **Microsoft.Bot.Builder.Dialogs**: OAuth and conversation management
 - **Microsoft.Bot.Builder.Integration.AspNet.Core**: ASP.NET Core integration
-- **Microsoft.Bot.Builder.Azure**: Azure-specific extensions
+- **Azure.Identity**: Managed Identity support
 
-## API Endpoints
+---
 
-- `POST /api/messages` - Bot Framework message endpoint
-- `GET /health` - Health check endpoint
-- `GET /swagger` - API documentation (development only)
-
-## Deployment to Azure
-
-1. **Create Azure Bot Service**:
-   ```bash
-   az bot create --resource-group myResourceGroup --name myBotName --kind webapp --subscription mySubscription
-   ```
-
-2. **Deploy to Azure App Service**:
-   ```bash
-   az webapp deployment source config-zip --resource-group myResourceGroup --name myAppService --src publish.zip
-   ```
-
-3. **Configure App Settings**:
-   Set the Microsoft App credentials in the Azure portal under Configuration.
-
-## Testing
-
-### Local Testing
-Use the Bot Framework Emulator to test locally:
-1. Start the application with `dotnet run`
-2. Open Bot Framework Emulator
-3. Connect to `http://localhost:5000/api/messages`
-
-### Azure Testing
-After deployment, test in the Azure portal using the Web Chat test interface.
-
-## Monitoring and Logging
-
-The application includes:
-- Structured logging with configurable levels
-- Health checks for monitoring
-- Error tracking and user-friendly error messages
-- Bot Framework telemetry integration
-
-## Next Steps
-
-- Add Application Insights for advanced monitoring
-- Implement conversation state and user state
-- Add authentication and authorization
-- Integrate with Azure Cognitive Services
-- Add multi-turn conversation support
-
-## References
-
-- [Azure Bot Service Documentation](https://docs.microsoft.com/en-us/azure/bot-service/)
-- [Bot Framework SDK](https://github.com/Microsoft/botframework-sdk)
-- [Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator)
+**🎯 Use the [PRIMARY-TESTING-FLOW.md](../PRIMARY-TESTING-FLOW.md) for all deployments and testing.**

@@ -56,15 +56,4 @@ public class BotController : ControllerBase
             Response.StatusCode = 500;
         }
     }
-
-    /// <summary>
-    /// Health check endpoint for monitoring bot availability.
-    /// </summary>
-    /// <returns>Simple OK response for health checks</returns>
-    [HttpGet]
-    [Route("/health")]
-    public IActionResult Health()
-    {
-        return Ok(new { status = "healthy", timestamp = DateTime.UtcNow });
-    }
 }

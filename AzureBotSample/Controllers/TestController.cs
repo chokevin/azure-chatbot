@@ -15,14 +15,14 @@ namespace AzureBotSample.Controllers
         [HttpPost("echo")]
         public IActionResult Echo([FromBody] TestMessage message)
         {
-            var text = !string.IsNullOrEmpty(message.Message) ? message.Message : message.Text;
+            var text = message.Text ?? message.Message ?? string.Empty;
             return Ok(new { echo = $"Echo: {text}", originalMessage = text });
         }
     }
 
     public class TestMessage
     {
-        public string Message { get; set; } = string.Empty;
-        public string Text { get; set; } = string.Empty;
+        public string? Text { get; set; }
+        public string? Message { get; set; }
     }
 }
