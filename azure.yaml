@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: azure-bot-teams
+metadata:
+  template: azure-bot-teams@0.0.1-beta
+  
+services:
+  bot-service:
+    project: ./AzureBotSample
+    language: dotnet
+    host: appservice
+      
+hooks:
+  # Perform any required setup before deployment
+  predeploy:
+    shell: pwsh
+    run: |
+      echo "Starting deployment of Azure Bot Service for Teams integration..."
+      
+  # Configure Teams channel after deployment
+  postdeploy:
+    shell: pwsh
+    run: |
+      echo "Bot deployed successfully!"
+      echo "Next steps:"
+      echo "1. Register your bot in Azure Bot Service"
+      echo "2. Configure Microsoft Teams channel"
+      echo "3. Add bot to your Teams app manifest"

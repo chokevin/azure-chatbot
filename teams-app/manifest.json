@@ -1,0 +1,49 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.16",
+    "version": "1.0.0",
+    "id": "3012216b-1d82-419b-9bce-3aace3811e92",
+    "packageName": "com.example.echobot",
+    "developer": {
+        "name": "Kevin",
+        "websiteUrl": "https://bot-app-opkp6mndkn5xg.azurewebsites.net",
+        "privacyUrl": "https://bot-app-opkp6mndkn5xg.azurewebsites.net/privacy",
+        "termsOfUseUrl": "https://bot-app-opkp6mndkn5xg.azurewebsites.net/terms"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "Echo Bot Test",
+        "full": "Simple Echo Bot for Testing"
+    },
+    "description": {
+        "short": "A simple echo bot that repeats your messages",
+        "full": "This is a simple echo bot that will repeat back any message you send to it. Perfect for testing bot functionality."
+    },
+    "accentColor": "#FFFFFF",
+    "bots": [
+        {
+            "botId": "3012216b-1d82-419b-9bce-3aace3811e92",
+            "scopes": [
+                "personal",
+                "team",
+                "groupchat"
+            ],
+            "supportsFiles": false,
+            "isNotificationOnly": false
+        }
+    ],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "webApplicationInfo": {
+        "id": "3012216b-1d82-419b-9bce-3aace3811e92",
+        "resource": "https://graph.microsoft.com"
+    },
+    "validDomains": [
+        "bot-app-opkp6mndkn5xg.azurewebsites.net"
+    ]
+}

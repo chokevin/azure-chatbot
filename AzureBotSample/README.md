@@ -1,14 +1,16 @@
-# Azure Bot Service Sample - Echo Bot
+# Azure Bot Service Sample - Echo Bot with Teams Integration
 
-This is a sample Azure Bot Service application built with .NET 9.0, following the [Azure Bot Service Quickstart guide](https://learn.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-create-bot?view=azure-bot-service-4.0&tabs=csharp%2Cvs).
+This is a sample Azure Bot Service application built with .NET 9.0, following the [Azure Bot Service Quickstart guide](https://learn.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-create-bot?view=azure-bot-service-4.0&tabs=csharp%2Cvs), **now enhanced with Microsoft Teams integration**.
 
 ## Features
 
 - **Echo Bot Implementation**: Echoes back any message sent to it
 - **Welcome Message**: Greets new users when they join the conversation
+- **Microsoft Teams Integration**: Ready-to-deploy Teams bot with channel configuration
+- **Azure Infrastructure**: Complete Bicep templates for Azure deployment
 - **Error Handling**: Comprehensive error handling with logging and user feedback
 - **Health Checks**: Built-in health monitoring endpoint
-- **Security**: Following Azure security best practices
+- **Security**: Following Azure security best practices with Key Vault and Managed Identity
 - **Logging**: Structured logging for debugging and monitoring
 
 ## Project Structure
@@ -17,21 +19,54 @@ This is a sample Azure Bot Service application built with .NET 9.0, following th
 AzureBotSample/
 ├── Controllers/
 │   └── BotController.cs          # HTTP endpoint for bot messages
+├── infra/                        # Azure Infrastructure (Bicep templates)
+│   ├── main.bicep               # Main infrastructure template
+│   └── main.parameters.json     # Template parameters
+├── teams-manifest/               # Microsoft Teams app manifest
+│   └── manifest.json            # Teams app configuration
 ├── EchoBot.cs                    # Main bot logic
 ├── AdapterWithErrorHandler.cs   # Error handling for bot adapter
 ├── Program.cs                    # Application startup and configuration
+├── azure.yaml                   # Azure Developer CLI configuration
 ├── appsettings.json             # Production configuration
 ├── appsettings.Development.json # Development configuration
-└── AzureBotSample.csproj        # Project file with dependencies
+├── AzureBotSample.csproj        # Project file with dependencies
+├── TEAMS-DEPLOYMENT.md          # Teams integration deployment guide
+└── TESTING.md                   # Local testing guide
 ```
 
-## Prerequisites
+## Quick Start - Teams Integration
 
-- .NET 9.0 SDK
-- Bot Framework Emulator (for local testing)
-- Azure subscription (for deployment)
+### Deploy to Azure and Connect to Teams
+
+1. **Register your bot** (get App ID and Password):
+   ```bash
+   # See TEAMS-DEPLOYMENT.md for detailed instructions
+   ```
+
+2. **Deploy to Azure**:
+   ```bash
+   azd auth login
+   azd init
+   azd up
+   ```
+
+3. **Configure Teams app** using the manifest in `teams-manifest/`
+
+4. **Install in Teams** and start chatting!
+
+For detailed instructions, see [TEAMS-DEPLOYMENT.md](./TEAMS-DEPLOYMENT.md).
 
 ## Local Development
+
+### Prerequisites
+
+- .NET 9.0 SDK
+- Azure subscription
+- Bot Framework Emulator (for local testing)
+- Azure Developer CLI (azd) for deployment
+
+### Local Development Setup
 
 1. **Clone and restore packages**:
    ```bash

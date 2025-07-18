@@ -7,16 +7,53 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
 // Add bot framework services
-// Register authentication services
-builder.Services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
+// Configure authentication to use Managed Identity when available, fallback to configuration
+var microsoftAppId = builder.Configuration["MicrosoftAppId"];
+var microsoftAppPassword = builder.Configuration["MicrosoftAppPassword"];
+var microsoftAppTenantId = builder.Configuration["MicrosoftAppTenantId"];
+var microsoftAppType = builder.Configuration["MicrosoftAppType"] ?? "MultiTenant";
+var azureClientId = builder.Configuration["AZURE_CLIENT_ID"];
+
+if (microsoftAppType == "UserAssignedMSI" || string.IsNullOrEmpty(microsoftAppPassword))
+{
+    // Use Managed Identity authentication with Bot Framework's built-in support
+    builder.Services.AddSingleton<BotFrameworkAuthentication>(serviceProvider =>
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Configuring Bot Framework to use User-Assigned Managed Identity authentication");
+        logger.LogInformation($"App ID: {microsoftAppId}");
+        logger.LogInformation($"Tenant ID: {microsoftAppTenantId}");
+        logger.LogInformation($"Azure Client ID: {azureClientId}");
+        
+        // Create a configuration that tells Bot Framework to use Managed Identity
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["MicrosoftAppType"] = "UserAssignedMSI",
+                ["MicrosoftAppId"] = microsoftAppId,
+                ["MicrosoftAppTenantId"] = microsoftAppTenantId,
+                ["MicrosoftAppPassword"] = "", // Explicitly empty for managed identity
+                ["AZURE_CLIENT_ID"] = azureClientId
+            })
+            .Build();
+        
+        return new ConfigurationBotFrameworkAuthentication(config, logger: logger);
+    });
+}
+else
+{
+    // Use traditional configuration-based authentication
+    builder.Services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>();
+}
 
 // Register the bot adapter with error handling
 builder.Services.AddSingleton<CloudAdapter, AdapterWithErrorHandler>();
 
-// Register the bot implementation
-builder.Services.AddTransient<IBot, EchoBot>();
+// Register the bot implementation (simplified without dialogs)
+builder.Services.AddTransient<IBot, AzureBotSample.EchoBot>();
 
 // Add logging services for better debugging and monitoring
 builder.Services.AddLogging();
