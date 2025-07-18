@@ -1,0 +1,51 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.16",
+  "version": "1.0.0",
+  "id": "YOUR_BOT_APP_ID_HERE",
+  "packageName": "com.company.azurebotforreams",
+  "developer": {
+    "name": "Your Company",
+    "websiteUrl": "https://your-company.com",
+    "privacyUrl": "https://your-company.com/privacy",
+    "termsOfUseUrl": "https://your-company.com/terms"
+  },
+  "icons": {
+    "color": "icon-color.png",
+    "outline": "icon-outline.png"
+  },
+  "name": {
+    "short": "Azure Bot Sample",
+    "full": "Azure Bot Sample for Microsoft Teams"
+  },
+  "description": {
+    "short": "An echo bot for Teams",
+    "full": "A sample Azure Bot Service application that echoes messages back to users in Microsoft Teams"
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "YOUR_BOT_APP_ID_HERE",
+      "scopes": [
+        "personal",
+        "team",
+        "groupchat"
+      ],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "supportsCalling": false,
+      "supportsVideo": false
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [
+    "YOUR_BOT_DOMAIN_HERE"
+  ],
+  "webApplicationInfo": {
+    "id": "YOUR_BOT_APP_ID_HERE",
+    "resource": "https://YOUR_BOT_DOMAIN_HERE"
+  }
+}

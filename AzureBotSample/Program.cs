@@ -1,7 +1,9 @@
 using AzureBotSample;
+using EchoBot.Dialogs;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Builder.Dialogs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,8 +54,16 @@ else
 // Register the bot adapter with error handling
 builder.Services.AddSingleton<CloudAdapter, AdapterWithErrorHandler>();
 
-// Register the bot implementation (simplified without dialogs)
-builder.Services.AddTransient<IBot, AzureBotSample.EchoBot>();
+// Register dialog services
+builder.Services.AddSingleton<IStorage, MemoryStorage>();
+builder.Services.AddSingleton<UserState>();
+builder.Services.AddSingleton<ConversationState>();
+
+// Register dialogs
+builder.Services.AddSingleton<MainDialog>();
+
+// Register the bot implementation with OAuth and dialog support
+builder.Services.AddTransient<IBot, OAuthEchoBot>();
 
 // Add logging services for better debugging and monitoring
 builder.Services.AddLogging();
