@@ -1,0 +1,100 @@
+# .dockerignore for .NET 9 Teams Bot
+# Optimized for Azure Container Registry deployment
+
+# Version control
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# IDE and editor files
+**/.vs
+**/.vscode
+**/.idea
+**/.project
+**/.settings
+**/.toolstarget
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+
+# Build outputs
+**/bin
+**/obj
+**/out
+**/publish
+
+# Development and testing
+**/.env
+**/.env.*
+**/secrets.dev.yaml
+**/values.dev.yaml
+**/appsettings.*.json
+!**/appsettings.json
+!**/appsettings.Development.json
+
+# Docker files (don't copy other Docker files into the image)
+**/.dockerignore
+**/Dockerfile*
+**/docker-compose*
+
+# Azure deployment files
+**/deployments
+**/infra
+**/azds.yaml
+
+# Documentation
+README.md
+LICENSE
+**/*.md
+!**/wwwroot/**/*.md
+
+# Node.js (if any frontend dependencies)
+**/node_modules
+**/npm-debug.log
+**/yarn-error.log
+
+# Charts and Kubernetes
+**/charts
+
+# OS generated files
+**/.DS_Store
+**/Thumbs.db
+
+# Test files
+**/tests
+**/*Test*
+**/*test*
+**/*.Test.*
+**/*.Tests.*
+
+# Logs
+**/*.log
+**/logs
+
+# Temporary files
+**/*.tmp
+**/*.temp
+**/*~
+
+# NuGet packages (restored during build)
+**/packages
+
+# User secrets and local configuration
+**/secrets
+**/*secrets*
+
+# Bot Framework Emulator files
+**/*.chat
+
+# Azure CLI and deployment scripts
+**/*.sh
+**/*.ps1
+**/*.cmd
+**/*.bat
+
+# Certificate files
+**/*.pfx
+**/*.p12
+**/*.key
+**/*.pem
+**/*.crt

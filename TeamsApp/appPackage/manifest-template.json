@@ -1,0 +1,63 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.0",
+  "id": "YOUR_APP_REGISTRATION_CLIENT_ID",
+  "developer": {
+    "name": "Internal Development Team",
+    "websiteUrl": "YOUR_NGROK_URL",
+    "privacyUrl": "YOUR_NGROK_URL/privacy",
+    "termsOfUseUrl": "YOUR_NGROK_URL/terms"
+  },
+  "icons": {
+    "color": "color-icon.png",
+    "outline": "outline-icon.png"
+  },
+  "name": {
+    "short": "Quote Agent Bot",
+    "full": "Quote Agent Bot - Your AI Assistant for Quotes"
+  },
+  "description": {
+    "short": "An AI-powered bot that provides intelligent quote assistance",
+    "full": "Quote Agent Bot is an intelligent assistant built with Microsoft Teams AI Library that helps you with quote generation, analysis, and management. It leverages advanced AI capabilities to provide personalized quote recommendations and insights."
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "YOUR_APP_REGISTRATION_CLIENT_ID",
+      "scopes": [
+        "personal",
+        "team",
+        "groupChat"
+      ],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": [
+            "personal",
+            "team",
+            "groupChat"
+          ],
+          "commands": [
+            {
+              "title": "Help",
+              "description": "Get help and information about the Quote Agent Bot"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "permissions": [
+    "identity"
+  ],
+  "validDomains": [
+    "YOUR_NGROK_DOMAIN",
+    "localhost"
+  ],
+  "webApplicationInfo": {
+    "id": "YOUR_APP_REGISTRATION_CLIENT_ID",
+    "resource": "https://RscBasedStoreApp"
+  }
+}

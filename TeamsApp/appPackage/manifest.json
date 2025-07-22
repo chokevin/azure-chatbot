@@ -1,0 +1,66 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.0",
+  "id": "7a3c24f6-36bd-4b24-91fe-aefb3fdbf8ac",
+  "developer": {
+    "name": "Internal Development Team",
+    "websiteUrl": "https://kevin-test-quote-bot-prod-webapp.azurewebsites.net",
+    "privacyUrl": "https://kevin-test-quote-bot-prod-webapp.azurewebsites.net/privacy",
+    "termsOfUseUrl": "https://kevin-test-quote-bot-prod-webapp.azurewebsites.net/terms"
+  },
+  "icons": {
+    "color": "color-icon.png",
+    "outline": "outline-icon.png"
+  },
+  "name": {
+    "short": "Quote Agent Bot",
+    "full": "Quote Agent Bot - Your AI Assistant for Quotes"
+  },
+  "description": {
+    "short": "An AI-powered bot that provides intelligent quote assistance",
+    "full": "Quote Agent Bot is an intelligent assistant built with Microsoft Teams AI Library that helps you with quote generation, analysis, and management. It leverages advanced AI capabilities to provide personalized quote recommendations and insights."
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "7a3c24f6-36bd-4b24-91fe-aefb3fdbf8ac",
+      "scopes": [
+        "personal",
+        "team",
+        "groupChat"
+      ],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": [
+            "personal",
+            "team",
+            "groupChat"
+          ],
+          "commands": [
+            {
+              "title": "Help",
+              "description": "Get help and information about the Quote Agent Bot"
+            },
+            {
+              "title": "Quote",
+              "description": "Generate or search for quotes"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "permissions": [
+    "identity"
+  ],
+  "validDomains": [
+    "kevin-test-quote-bot-prod-webapp.azurewebsites.net"
+  ],
+  "webApplicationInfo": {
+    "id": "7a3c24f6-36bd-4b24-91fe-aefb3fdbf8ac",
+    "resource": "https://RscBasedStoreApp"
+  }
+}
