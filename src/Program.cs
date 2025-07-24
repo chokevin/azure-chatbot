@@ -1,3 +1,7 @@
+// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
@@ -42,8 +46,8 @@ builder.Services.AddSingleton<BotFrameworkAuthentication, ConfigurationBotFramew
 // Note: some classes expect a BotAdapter and some expect a BotFrameworkHttpAdapter, so
 // register the same adapter instance for all types.
 builder.Services.AddSingleton<TeamsAdapter, AdapterWithErrorHandler>();
-builder.Services.AddSingleton<IBotFrameworkHttpAdapter>(sp => sp.GetService<TeamsAdapter>()!);
-builder.Services.AddSingleton<BotAdapter>(sp => sp.GetService<TeamsAdapter>()!);
+builder.Services.AddSingleton<IBotFrameworkHttpAdapter>(sp => sp.GetService<TeamsAdapter>() !);
+builder.Services.AddSingleton<BotAdapter>(sp => sp.GetService<TeamsAdapter>() !);
 
 // Create the storage to persist turn state
 builder.Services.AddSingleton<IStorage, MemoryStorage>();
@@ -51,20 +55,30 @@ builder.Services.AddSingleton<IStorage, MemoryStorage>();
 // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
 builder.Services.AddTransient<IBot>(sp =>
 {
-    IStorage storage = sp.GetService<IStorage>()!;
-    TeamsAdapter adapter = sp.GetService<TeamsAdapter>()!;
+    IStorage storage = sp.GetService<IStorage>() !;
+    TeamsAdapter adapter = sp.GetService<TeamsAdapter>() !;
     var config = sp.GetService<IOptions<ConfigOptions>>()?.Value ?? new ConfigOptions();
 
-    AuthenticationOptions<AppState> options = new();
-    options.AddAuthentication("entra", new OAuthSettings()
+    AuthenticationOptions<AppState> options = new ();
+
+    // Add authentication only if OAuth connection name is configured
+    if (!string.IsNullOrEmpty(config.OAUTH_CONNECTION_NAME))
     {
-        ConnectionName = config.OAUTH_CONNECTION_NAME,
-        Title = "Sign In",
-        Text = "Please sign in to use the bot.",
-        EndOnInvalidMessage = true,
-        EnableSso = true,
+        options.AddAuthentication("entra", new OAuthSettings()
+        {
+            ConnectionName = config.OAUTH_CONNECTION_NAME,
+            Title = "Sign In to Microsoft Graph",
+            Text = "Please sign in to access Microsoft Graph services.",
+            EndOnInvalidMessage = true,
+            EnableSso = true,
+        });
     }
-    );
+    else
+    {
+        // Log warning if OAuth is not configured
+        var logger = sp.GetRequiredService<ILogger<Program>>();
+        logger.LogWarning("OAuth connection name is not configured. Authentication features will be disabled.");
+    }
 
     // Create the application
     Application<AppState> app = new ApplicationBuilder<AppState>()
@@ -80,17 +94,25 @@ builder.Services.AddTransient<IBot>(sp =>
         await turnContext.SendActivityAsync("Ok I've deleted the current conversation state", cancellationToken: cancellationToken);
     });
 
-    // Listen for user to say "/signout" - not needed without OAuth
-    app.OnMessage("/signout", async (context, state, cancellationToken) =>
+    // Listen for user to say "/signout"
+    app.OnMessage("/signout", async (turnContext, state, cancellationToken) =>
     {
-        await context.SendActivityAsync("No authentication is configured for this bot");
+        if (!string.IsNullOrEmpty(config.OAUTH_CONNECTION_NAME))
+        {
+            await app.Authentication.SignOutUserAsync(turnContext, state, cancellationToken: cancellationToken);
+            await turnContext.SendActivityAsync("You have been signed out successfully.");
+        }
+        else
+        {
+            await turnContext.SendActivityAsync("Authentication is not configured for this bot.");
+        }
     });
 
     // Listen for ANY message to be received. MUST BE AFTER ANY OTHER MESSAGE HANDLERS
     app.OnActivity(ActivityTypes.Message, async (turnContext, turnState, cancellationToken) =>
     {
         int count = turnState.Conversation.MessageCount;
-        
+
         // Increment message count
         turnState.Conversation.MessageCount = ++count;
 
@@ -98,20 +120,33 @@ builder.Services.AddTransient<IBot>(sp =>
         await turnContext.SendActivityAsync($"[{count}] You said: {turnContext.Activity.Text}", cancellationToken: cancellationToken);
     });
 
-    app.Authentication.Get("entra").OnUserSignInSuccess(async (context, state) =>
+    // Configure authentication event handlers only if OAuth is configured
+    if (!string.IsNullOrEmpty(config.OAUTH_CONNECTION_NAME))
     {
-        // Successfully logged in
-        await context.SendActivityAsync("Successfully logged in");
-        await context.SendActivityAsync($"Token string length: {state.Temp.AuthTokens["entra"].Length}");
-        await context.SendActivityAsync($"This is what you said before the AuthFlow started: {context.Activity.Text}");
-    });
+        app.Authentication.Get("entra").OnUserSignInSuccess(async (turnContext, state) =>
+        {
+            // Successfully logged in
+            await turnContext.SendActivityAsync("Successfully signed in to Microsoft Graph!");
 
-    app.Authentication.Get("entra").OnUserSignInFailure(async (context, state, ex) =>
-    {
-        // Failed to login
-        await context.SendActivityAsync("Failed to login");
-        await context.SendActivityAsync($"Error message: {ex.Message}");
-    });
+            if (state.Temp.AuthTokens.ContainsKey("entra"))
+            {
+                await turnContext.SendActivityAsync($"Token received (length: {state.Temp.AuthTokens["entra"].Length})");
+            }
+
+            await turnContext.SendActivityAsync($"You can now use authenticated features. Original message: {turnContext.Activity.Text}");
+        });
+
+        app.Authentication.Get("entra").OnUserSignInFailure(async (turnContext, state, ex) =>
+        {
+            // Failed to login
+            await turnContext.SendActivityAsync("Failed to sign in to Microsoft Graph");
+            await turnContext.SendActivityAsync($"Error: {ex.Message}");
+
+            // Log the full exception for debugging
+            var logger = sp.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "OAuth sign-in failed for user {UserId}", turnContext.Activity.From.Id);
+        });
+    }
 
     return app;
 });

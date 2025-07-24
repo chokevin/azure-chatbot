@@ -1,3 +1,7 @@
+// <copyright file="BotController.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -8,24 +12,22 @@ namespace Quote.Agent.Controllers;
 [ApiController]
 public class BotController : ControllerBase
 {
-    private readonly IBotFrameworkHttpAdapter _adapter;
-    private readonly IBot _bot;
+    private readonly IBotFrameworkHttpAdapter adapter;
+    private readonly IBot bot;
 
     public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
     {
-        _adapter = adapter;
-        _bot = bot;
+        this.adapter = adapter;
+        this.bot = bot;
     }
 
     [HttpPost]
     public async Task PostAsync(CancellationToken cancellationToken = default)
     {
-        await _adapter.ProcessAsync
-        (
-            Request,
-            Response,
-            _bot,
-            cancellationToken
-        );
+        await this.adapter.ProcessAsync(
+            this.Request,
+            this.Response,
+            this.bot,
+            cancellationToken);
     }
 }
