@@ -1,3 +1,7 @@
+// <copyright file="AppState.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using Microsoft.Teams.AI.State;
 
 namespace Quote.Agent.Models;
@@ -5,19 +9,20 @@ namespace Quote.Agent.Models;
 // Extend the turn state by configuring custom strongly typed state classes.
 public class AppState : TurnState
 {
-    public AppState() : base()
+    public AppState()
+        : base()
     {
-        ScopeDefaults[CONVERSATION_SCOPE] = new ConversationState();
+        this.ScopeDefaults[CONVERSATION_SCOPE] = new ConversationState();
     }
 
     /// <summary>
-    /// Stores all the conversation-related state.
+    /// Gets or sets stores all the conversation-related state.
     /// </summary>
     public new ConversationState Conversation
     {
         get
         {
-            TurnStateEntry? scope = GetScope(CONVERSATION_SCOPE);
+            TurnStateEntry? scope = this.GetScope(CONVERSATION_SCOPE);
             if (scope == null)
             {
                 throw new ArgumentException("TurnState hasn't been loaded. Call LoadStateAsync() first.");
@@ -25,9 +30,10 @@ public class AppState : TurnState
 
             return (ConversationState)scope.Value!;
         }
+
         set
         {
-            TurnStateEntry? scope = GetScope(CONVERSATION_SCOPE);
+            TurnStateEntry? scope = this.GetScope(CONVERSATION_SCOPE);
             if (scope == null)
             {
                 throw new ArgumentException("TurnState hasn't been loaded. Call LoadStateAsync() first.");
@@ -43,7 +49,7 @@ public class ConversationState : Record
 {
     public int MessageCount
     {
-        get => Get<int>("MessageCount");
-        set => Set("MessageCount", value);
+        get => this.Get<int>("MessageCount");
+        set => this.Set("MessageCount", value);
     }
 }

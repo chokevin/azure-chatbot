@@ -1,3 +1,7 @@
+// <copyright file="AdapterWithErrorHandler.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Teams.AI;
@@ -9,7 +13,7 @@ public class AdapterWithErrorHandler : TeamsAdapter
     public AdapterWithErrorHandler(IConfiguration configuration, ILogger<TeamsAdapter> logger)
         : base(configuration, null, logger)
     {
-        OnTurnError = async (turnContext, exception) =>
+        this.OnTurnError = async (turnContext, exception) =>
         {
             // Log any leaked exception from the application.
             // NOTE: In production environment, you should consider logging this to

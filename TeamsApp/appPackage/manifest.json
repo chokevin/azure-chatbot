@@ -54,13 +54,15 @@
     }
   ],
   "permissions": [
-    "identity"
+    "identity",
+    "messageTeamMembers"
   ],
   "validDomains": [
-    "kevin-test-quote-bot-prod-webapp.azurewebsites.net"
+    "kevin-test-quote-bot-prod-webapp.azurewebsites.net",
+    "token.botframework.com"
   ],
   "webApplicationInfo": {
     "id": "7a3c24f6-36bd-4b24-91fe-aefb3fdbf8ac",
-    "resource": "https://RscBasedStoreApp"
+    "resource": "https://graph.microsoft.com"
   }
 }
