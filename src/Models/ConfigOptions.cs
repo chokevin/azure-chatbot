@@ -13,4 +13,5 @@ public class ConfigOptions
     public string MicrosoftAppPassword { get; set; } = string.Empty;
     public string MicrosoftAppTenantId { get; set; } = string.Empty;
     public string MicrosoftAppManagedIdentityResourceId { get; set; } = string.Empty;
+    public string OAUTH_CONNECTION_NAME { get; set; } = "entra";
 }
