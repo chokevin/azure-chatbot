@@ -116,8 +116,43 @@ builder.Services.AddTransient<IBot>(sp =>
         // Increment message count
         turnState.Conversation.MessageCount = ++count;
 
-        // Echo the user's message with count
-        await turnContext.SendActivityAsync($"[{count}] You said: {turnContext.Activity.Text}", cancellationToken: cancellationToken);
+        try
+        {
+            // Create HTTP client to call the Azure service
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+            // Prepare the request payload
+            var requestPayload = new
+            {
+                input_text = turnContext.Activity.Text
+            };
+
+            var jsonContent = new StringContent(
+                System.Text.Json.JsonSerializer.Serialize(requestPayload),
+                System.Text.Encoding.UTF8,
+                "application/json"
+            );
+
+            // Make POST request to the kusto query recommender service
+            var response = await httpClient.PostAsync("http://aksdri.azurewebsites.net/api/kusto-query-recommender/suggest_agents", jsonContent, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                await turnContext.SendActivityAsync($"[{count}] Query suggestion: {responseContent}", cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await turnContext.SendActivityAsync($"[{count}] Failed to get query suggestion. Status: {response.StatusCode}", cancellationToken: cancellationToken);
+            }
+        }
+        catch (Exception ex)
+        {
+            var logger = sp.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "Error calling kusto query recommender service");
+            await turnContext.SendActivityAsync($"[{count}] Error: Failed to get query suggestion - {ex.Message}", cancellationToken: cancellationToken);
+        }
     });
 
     // Configure authentication event handlers only if OAuth is configured
