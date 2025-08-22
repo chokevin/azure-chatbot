@@ -6,13 +6,11 @@ namespace Quote.Agent.Models;
 
 /// <summary>
 /// Configuration options for the bot.
-/// Note: Bot authentication is configured via Azure Web App environment variables,
-/// not through this class. This is kept for potential future extensions.
+/// Bot authentication is configured via Azure Web App environment variables.
 /// </summary>
 public class ConfigOptions
 {
-    // These properties are available for future use but authentication
-    // is handled automatically by Azure Bot Framework with Managed Identity
+    // These properties are available for bot framework configuration
     public string MicrosoftAppId { get; set; } = string.Empty;
 
     public string MicrosoftAppPassword { get; set; } = string.Empty;
@@ -21,5 +19,14 @@ public class ConfigOptions
 
     public string MicrosoftAppManagedIdentityResourceId { get; set; } = string.Empty;
 
-    public string OAUTH_CONNECTION_NAME { get; set; } = "entra";
+    // OAuth configuration for Kusto authentication
+    public string OAUTH_CONNECTION_NAME { get; set; } = string.Empty;
+
+    public string AAD_APP_CLIENT_ID { get; set; } = string.Empty;
+
+    public string AAD_APP_CLIENT_SECRET { get; set; } = string.Empty;
+
+    public string AAD_APP_TENANT_ID { get; set; } = string.Empty;
+
+    public string AAD_APP_OAUTH_AUTHORITY_HOST { get; set; } = string.Empty;
 }
